@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import { faker } from "@faker-js/faker";
-import Client from "../../../client_PO/client";
+import Client from "../../support/POM/Client_PO";
 
 describe("Test for adding new client ", () => {
   const client = new Client();
@@ -15,21 +15,25 @@ describe("Test for adding new client ", () => {
   });
 
   it("should verify validation error message while submitting without mandatory fields", () => {
-    const selector = [".js-input-error", ".js-input-error", ".js-input-error"];
     const errorMessage = [
       "The First Name field is required.",
       "The Last Name field is required.",
       "The Assignee field is required.",
     ];
 
-    client
-      .clickClient()
-      .wait(1000)
-      .clickAdd()
-      .wait(1000)
-      .clickSave("Save")
-      .dataVerify(selector, "include.text", errorMessage)
-      .clickCancel("Cancel");
+    client.clickOnClientButton();
+
+    cy.wait(1000);
+
+    client.clickOnAddButton();
+
+    cy.wait(3000);
+
+    client.clickOnSaveButton();
+
+    cy.errorVerification(errorMessage);
+
+    client.clickOnCancelButton();
   });
 
   context("form fill for create new client dependent test", () => {
@@ -38,27 +42,34 @@ describe("Test for adding new client ", () => {
     const email = faker.internet.email();
 
     beforeEach(() => {
+      client.clickOnClientButton();
+
+      cy.wait(1000);
+
+      client.clickOnAddButton();
+
+      cy.wait(3000);
+
       client
-        .clickClient()
-        .wait(1000)
-        .clickAdd()
-        .wait(1000)
         .typeFirstName("1", firstname)
         .typeLastName("1", lastname)
         .typeEmail("1", email);
     });
 
     it("should verify the functionality of cancel button", () => {
-      client.clickCancel("Cancel");
+      client
+        .clickOnCancelButton()
+        .dataVerification("not.have.text", email, firstname, lastname);
     });
 
     it("should add new client and verify added data is exist in list", () => {
-      client.clickSave("Save").wait(3000);
+      client.selectAssignee();
 
-      cy.get(".ag-flex-column p").first().should("include.text", email);
-      cy.get(".ag-flex-column a")
-        .first()
-        .should("include.text", firstname + " " + lastname);
+      client.clickOnSaveButton();
+
+      cy.wait(3000);
+
+      client.dataVerification("include.text", email, firstname, lastname);
     });
 
     it("should add new client and verify edited data in list", () => {
@@ -67,31 +78,37 @@ describe("Test for adding new client ", () => {
       const editemail = faker.internet.email();
       const mail = faker.internet.email();
 
-      client.typeEmail("1", mail).clickSave("Save").wait(3000);
+      client.selectAssignee();
 
-      cy.get(".ag-flex-column p").first().should("include.text", mail);
-      cy.get(".ag-flex-column a")
-        .first()
-        .should("include.text", firstname + " " + lastname);
-      cy.get("tr>td:nth-child(18)").first().click();
-      cy.get(
-        ".ag-menu__item [class='transparent-button width-100p']:nth-of-type(2)"
-      ).click();
+      cy.wait(2000);
+
+      client.typeEmail("1", mail).clickOnSaveButton();
+
+      cy.wait(3000);
+
+      client.dataVerification("include.text", mail, firstname, lastname);
+
+      cy.wait(2000);
+
+      client.clickOnActionButton().clickOnDropDownMenu("Edit");
+
+      cy.wait(5000);
 
       client
-        .wait(5000)
-        .typeeditFirstName("0", editfirstname)
-        .typeeditLastName("0", editlastname)
-        .typeMail("0", editemail);
+        .editFirstName("0", editfirstname)
+        .editLastName("0", editlastname)
+        .editEmail("0", editemail);
 
       cy.get(".submit-button-margin .blueButton").click();
 
-      client.wait(3000);
-
-      cy.get(".ag-flex-column p").first().should("include.text", editemail);
-      cy.get(".ag-flex-column a")
-        .first()
-        .should("include.text", editfirstname + " " + editlastname);
+      cy.wait(3000);
+      
+      client.dataVerification(
+        "include.text",
+        editemail,
+        editfirstname,
+        editlastname
+      );
     });
   });
 });
