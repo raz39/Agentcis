@@ -29,6 +29,12 @@ class Client {
     return this;
   }
 
+  clickOnServicesMenu() {
+    cy.get("#servicesMenu").click();
+
+    return this;
+  }
+
   clickOnAddButton() {
     cy.get(".blueButton.button.field").click();
 
@@ -40,6 +46,48 @@ class Client {
 
     return this;
   }
+
+  selectService(){
+    cy.get(".ag-select-icon > i").eq(2).dblclick();
+    cy.wait(4000)
+    cy.get(".ag-select-list").then(($el) => {
+      const random = Math.floor(Math.random() * $el.length);
+      cy.get(".ag-select-element").then((text) => {
+        cy.wrap(text)
+          .eq("1")
+          .as("name")
+          .invoke("text")
+          .then((name) => {
+            cy.get("@name").click();
+            cy.log(name)
+            //cy.get("[class='field col-hr-1 services-head__choose-service'] .ag-align-center").click()
+          });
+      });
+    });
+return this;
+  }
+
+
+  selectFor(){
+    cy.get(".ag-select-icon > i").eq(3).dblclick();
+    cy.wait(4000)
+    cy.get(".ag-select-list").then(($el) => {
+      const random = Math.floor(Math.random() * $el.length);
+      cy.get(".ag-select-element").then((text) => {
+        cy.wrap(text)
+          .eq("1")
+          .as("name")
+          .invoke("text")
+          .then((name) => {
+            cy.get("@name").click();
+            cy.get(".ag-select-icon > i").eq(3).dblclick();
+            cy.log(name)
+          });
+      });
+    });
+return this;
+  }
+
 
   selectAssignee() {
     cy.get("div[name='assignee'] > div[role='combobox'] i").dblclick();
@@ -98,22 +146,17 @@ class Client {
     return this;
   }
 
-  dataVerification(message, email, firstname, lastname) {
-    cy.get(".ag-flex-column p").first().should(message, email);
-    cy.get(".ag-flex-column a")
-      .first()
-      .should(message, firstname + " " + lastname);
+  verifyEmail(assertValue, email) {
+    cy.get(".ag-flex-column p").first().should(assertValue, email);
 
     return this;
-  }
+}
 
-  nameVerification(message,firstname,lastname) {
-    cy.get(".ag-flex-column a")
-      .first()
-      .should(message, firstname + " " + lastname);
+verifyName(assertValue,fullName) {
+  cy.get(".ag-flex-column a").first().should(assertValue, fullName);
 
-    return this;
-  }
+  return this;
+}
 }
 
 export default Client;
