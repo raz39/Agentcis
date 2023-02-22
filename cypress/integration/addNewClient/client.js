@@ -14,7 +14,7 @@ describe("Test for adding new client ", () => {
     cy.preserveCookies();
   });
 
-  it("should verify validation error message while submitting without mandatory fields", () => {
+  it("should validate empty field verification error", () => {
     const emptyValidationError = [
       "The First Name field is required.",
       "The Last Name field is required.",
@@ -57,7 +57,7 @@ describe("Test for adding new client ", () => {
       client.typeFirstName(firstName).typeLastName(lastName).typeEmail(email);
     });
 
-    it("should verify the functionality of cancel button and verify data are not existence in list", function () {
+    it("should click on cancel button and verify added data inexistence in list", function () {
       client
         .selectAssignee()
         .selectApplication()
@@ -74,7 +74,7 @@ describe("Test for adding new client ", () => {
 
     });
 
-    it("should add new client and verify edited data in list", function () {
+    it("should add new client and verify edited data existence in list", function () {
       const firstName = faker.name.firstName();
       const lastName = faker.name.lastName();
       const email = faker.internet.email();
