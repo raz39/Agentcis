@@ -18,7 +18,7 @@ class Client {
   }
 
   typeLastName(LastName) {
-    cy.get("input[name='last_name']").eq(1).clear().type(LastName);
+    cy.get("input[name='last_name']").eq(1).click().clear().click().type(LastName);
 
     return this;
   }
@@ -46,7 +46,7 @@ class Client {
 
     cy.get(".form li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
-      cy.get(".form .col-hr-2").then((text) => {
+      cy.get(".ag-select-element").then((text) => {
         cy.wrap(text)
           .eq(random)
           .as("name")
@@ -77,12 +77,36 @@ class Client {
           });
       });
     });
-    cy.get("div[name='selectProducts'] > div[role='combobox'] i").click({
+    cy.get("div[name='selectProducts'] > div[role='combobox'] i").dblclick({
       force: true,
     });
 
     return this;
   }
+
+  selectCountryOfPassport() {
+    cy.get("div[name='countryPassport'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap").dblclick({
+      force: true,
+    });
+    cy.wait(2000);
+    cy.get(".ag-select-list-wrapper li").then(($el) => {
+      const random = Math.floor(Math.random() * $el.length);
+      cy.get(".ag-select-element").then((text) => {
+        cy.wrap(text)
+          .eq(random)
+          .as("name")
+          .invoke("text")
+          .then((name) => {
+            cy.get("@name").click();
+            cy.log(name);
+          });
+      });
+    });
+
+    return this;
+  }
+  
+
 
   clickOnCancelButton() {
     cy.get(".pull-right .defaultButton.button").contains("Cancel").click();
@@ -133,6 +157,74 @@ verifyName(assertValue,fullName) {
 
   return this;
 }
+typeDate(){
+cy.get("#DOB").type("2007-02-01")
+cy.get("[max-date] .label").click();
+
+return this;
+}
+
+typeClientId(){
+  cy.get("input[name='client_identifier']").dblclick().type("12");
+
+  return this;
+}
+
+typePhone(){
+cy.get(".ui.input").eq(3).type("0412345678");
+
+return this;
+}
+typeAddress(){
+  cy.get("h4:nth-of-type(3)").click();
+  cy.get("input[name='street'").type("43678364");
+  cy.get("input[name='city'").type("43678364");
+  cy.get("input[name='state'").type("43678364");
+  cy.get("input[name='zip_code'").type("43678364");
+  cy.get("div[name='country'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap").dblclick({
+    force: true,
+  });
+  cy.wait(2000);
+  cy.get(".ag-select-list-wrapper li").then(($el) => {
+    const random = Math.floor(Math.random() * $el.length);
+    cy.get(".ag-select-element").then((text) => {
+      cy.wrap(text)
+        .eq(random)
+        .as("name")
+        .invoke("text")
+        .then((name) => {
+          cy.get("@name").click();
+          cy.log(name);
+        });
+    });
+  });
+  return this;
+  }
+
+  typePreferedData(){
+    cy.get("#preferredIntake").type("2007-02-01");
+
+    return this;
+  }
+
+  typePassportNumber(){
+    cy.get("input[name='passport_number']").type("1234567");
+  
+    return this;
+  }
+
+  typeVisaType(){
+    cy.get("input[name='visa_type']").type("none");
+  
+    return this;
+  }
+
+  typeVisaExpiry(){
+    cy.get("#visaExpiry").type("2010-02-01");
+
+    return this;
+  }
+
 }
 
 export default Client;

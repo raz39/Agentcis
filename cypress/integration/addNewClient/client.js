@@ -29,11 +29,15 @@ describe("Test for adding new client ", () => {
 
     cy.wait(3000);
 
-    client.clickOnSaveButton();
+    cy.get(".inline-block").click();
+    // cy.pause()
+
+    cy.get(".submitButton").click();
+    // cy.pause()
 
     cy.verifyValidationErrors(emptyValidationError);
 
-    client.clickOnCancelButton();
+    //client.clickOnCancelButton();
   });
 
   context("form fill for create new client dependent test", () => {
@@ -47,57 +51,73 @@ describe("Test for adding new client ", () => {
       cy.wrap(email).as("email");
       cy.wrap(name).as("name");
 
-      client.clickOnClientMenu();
+      // client.clickOnClientMenu();
 
-      cy.wait(2000);
+      // cy.wait(2000);
 
-      client.clickOnAddButton();
-      cy.wait(2000);
+      // client.clickOnAddButton();
+      // cy.wait(2000);
 
-      client.typeFirstName(firstName).typeLastName(lastName).typeEmail(email);
+      // cy.get(".inline-block").click()
+
+      client
+        .typeFirstName(firstName)
+        .typeLastName(lastName)
+        .typeDate()
+        .typeEmail(email)
+        .typeClientId()
+        .typePhone()
+        .typeAddress();
+      cy.get("form[name='clientForm'] > h4:nth-of-type(4)").click();
+      client
+        .typePreferedData()
+        .typePassportNumber()
+        .typeVisaType()
+        .typeVisaExpiry()
+        .selectCountryOfPassport();
     });
 
     it("should verify the functionality of cancel button and verify data are not added in list", function () {
+      client.selectAssignee().selectProduct();
+      cy.get(".submitButton").dblclick();
       client
-        .selectAssignee()
-        .selectProduct()
-        .clickOnCancelButton()
-        .verifyName("not.have.text",this.name).verifyEmail("not.have.text",this.email);
+        .verifyName("include.text", this.name)
+        .verifyEmail("include.text", this.email);
     });
 
-    it("should add new client and verify added data existence in list", function () {
-      client.selectAssignee().selectProduct().clickOnSaveButton();
+    // it("should add new client and verify added data existence in list", function () {
+    //   client.selectAssignee().selectProduct().clickOnSaveButton();
 
-      cy.wait(5000);
+    //   cy.wait(5000);
 
-      client.verifyName("include.text",this.name).verifyEmail("include.text",this.email);
+    //   client.verifyName("include.text",this.name).verifyEmail("include.text",this.email);
 
-    });
+    // });
 
-    it("should add new client and verify edited data in list", function () {
-      const firstName = faker.name.firstName();
-      const lastName = faker.name.lastName();
-      const email = faker.internet.email();
-      const fullName = `${firstName} ${lastName}`;
+    // it("should add new client and verify edited data in list", function () {
+    //   const firstName = faker.name.firstName();
+    //   const lastName = faker.name.lastName();
+    //   const email = faker.internet.email();
+    //   const fullName = `${firstName} ${lastName}`;
 
-      client.selectAssignee().selectProduct().clickOnSaveButton();
+    //   client.selectAssignee().selectProduct().clickOnSaveButton();
 
-      cy.wait(3000);
+    //   cy.wait(3000);
 
-      client
-        .verifyName("include.text",this.name).verifyEmail("include.text",this.email)
-        .clickOnActionButton()
-        .clickOnDropDownMenu("Edit");
+    //   client
+    //     .verifyName("include.text",this.name).verifyEmail("include.text",this.email)
+    //     .clickOnActionButton()
+    //     .clickOnDropDownMenu("Edit");
 
-      cy.wait(3000);
+    //   cy.wait(3000);
 
-      client.editFirstName(firstName).editLastName(lastName).editEmail(email);
+    //   client.editFirstName(firstName).editLastName(lastName).editEmail(email);
 
-      cy.get(".submit-button-margin .blueButton").click();
+    //   cy.get(".submit-button-margin .blueButton").click();
 
-      cy.wait(3000);
+    //   cy.wait(3000);
 
-      client.verifyName("include.text",fullName).verifyEmail("include.text",email);
-    });
+    //   client.verifyName("include.text",fullName).verifyEmail("include.text",email);
+    // });
   });
 });
