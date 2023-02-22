@@ -43,7 +43,6 @@ describe("Test for adding new client ", () => {
       const email = faker.internet.email();
       const name = `${firstName} ${lastName}`;
 
-      cy.wrap(name).as("name");
       cy.wrap(email).as("email");
       cy.wrap(name).as("name");
 
@@ -52,25 +51,26 @@ describe("Test for adding new client ", () => {
       cy.wait(2000);
 
       client.clickOnAddButton();
+
       cy.wait(2000);
 
       client.typeFirstName(firstName).typeLastName(lastName).typeEmail(email);
     });
 
-    it("should verify the functionality of cancel button and verify data are not added in list", function () {
+    it("should verify the functionality of cancel button and verify data are not existence in list", function () {
       client
         .selectAssignee()
-        .selectProduct()
+        .selectApplication()
         .clickOnCancelButton()
-        .verifyName("not.have.text",this.name).verifyEmail("not.have.text",this.email);
+        .verifyName(this.name,"not.have.text").verifyEmail(this.email,"not.have.text");
     });
 
     it("should add new client and verify added data existence in list", function () {
-      client.selectAssignee().selectProduct().clickOnSaveButton();
+      client.selectAssignee().selectApplication().clickOnSaveButton();
 
       cy.wait(5000);
 
-      client.verifyName("include.text",this.name).verifyEmail("include.text",this.email);
+      client.verifyName(this.name).verifyEmail(this.email);
 
     });
 
@@ -80,12 +80,12 @@ describe("Test for adding new client ", () => {
       const email = faker.internet.email();
       const fullName = `${firstName} ${lastName}`;
 
-      client.selectAssignee().selectProduct().clickOnSaveButton();
+      client.selectAssignee().selectApplication().clickOnSaveButton();
 
-      cy.wait(3000);
+      cy.wait(4000);
 
       client
-        .verifyName("include.text",this.name).verifyEmail("include.text",this.email)
+        .verifyName(this.name).verifyEmail(this.email)
         .clickOnActionButton()
         .clickOnDropDownMenu("Edit");
 
@@ -97,7 +97,7 @@ describe("Test for adding new client ", () => {
 
       cy.wait(3000);
 
-      client.verifyName("include.text",fullName).verifyEmail("include.text",email);
+      client.verifyName(fullName).verifyEmail(email);
     });
   });
 });

@@ -5,20 +5,20 @@ class Client {
     return this;
   }
 
-  editFirstName(FirstName) {
-    cy.get("#first_name").clear().type(FirstName);
+  editFirstName(firstName) {
+    cy.get("#first_name").clear().type(firstName);
 
     return this;
   }
 
-  editLastName(LastName) {
-    cy.get("#last_name").clear().type(LastName);
+  editLastName(lastName) {
+    cy.get("#last_name").clear().type(lastName);
 
     return this;
   }
 
-  typeLastName(LastName) {
-    cy.get("input[name='last_name']").eq(1).clear().type(LastName);
+  typeLastName(lastName) {
+    cy.get("input[name='last_name']").eq(1).clear().type(lastName);
 
     return this;
   }
@@ -49,10 +49,10 @@ class Client {
       cy.get(".form .col-hr-2").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("assigneeName")
           .invoke("text")
-          .then((name) => {
-            cy.get("@name").dblclick();
+          .then(() => {
+            cy.get("@assigneeName").dblclick();
           });
       });
     });
@@ -60,23 +60,26 @@ class Client {
     return this;
   }
 
-  selectProduct() {
+  selectApplication() {
     cy.get("div[name='selectProducts'] > div[role='combobox']").dblclick({
       force: true,
     });
+
     cy.wait(2000);
+  
     cy.get(".form li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.get("li[role='option'] > div > div:nth-of-type(1)").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("productName")
           .invoke("text")
-          .then((name) => {
-            cy.get("@name").click();
+          .then(() => {
+            cy.get("@productName").click();
           });
       });
     });
+    
     cy.get("div[name='selectProducts'] > div[role='combobox'] i").click({
       force: true,
     });
@@ -122,13 +125,13 @@ class Client {
     return this;
   }
 
-  verifyEmail(assertValue, email) {
+  verifyEmail(email,assertValue="include.text") {
     cy.get(".ag-flex-column p").first().should(assertValue, email);
 
     return this;
 }
 
-verifyName(assertValue,fullName) {
+verifyName(fullName,assertValue="include.text") {
   cy.get(".ag-flex-column a").first().should(assertValue, fullName);
 
   return this;

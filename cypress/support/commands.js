@@ -16,8 +16,8 @@ Cypress.Commands.add("visitMainPage", () => {
   cy.visit(Cypress.env("baseUrl"));
 });
 
-Cypress.Commands.add("verifyValidationErrors", (selectors) => {
+Cypress.Commands.add("verifyValidationErrors", (validationError) => {
   cy.get(".form .js-input-error").each((selector, index) => {
-    cy.get(selector).should("include.text", selectors[index]);
+    cy.get(selector).should("include.text", validationError[index]);
   });
 });
