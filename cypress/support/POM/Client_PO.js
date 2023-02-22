@@ -77,7 +77,7 @@ class Client {
           });
       });
     });
-    cy.get("div[name='selectProducts'] > div[role='combobox'] i").dblclick({
+    cy.get("[name] .formPage-lg:nth-child(12) [aria-hidden]").click({
       force: true,
     });
 
@@ -175,12 +175,12 @@ cy.get(".ui.input").eq(3).type("0412345678");
 
 return this;
 }
-typeAddress(){
+typeAddress(street,city,state,zip_code){
   cy.get("h4:nth-of-type(3)").click();
-  cy.get("input[name='street'").type("43678364");
-  cy.get("input[name='city'").type("43678364");
-  cy.get("input[name='state'").type("43678364");
-  cy.get("input[name='zip_code'").type("43678364");
+  cy.get("input[name='street'").type(street);
+  cy.get("input[name='city'").type(city);
+  cy.get("input[name='state'").type(state);
+  cy.get("input[name='zip_code'").type(zip_code);
   cy.get("div[name='country'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap").dblclick({
     force: true,
   });
@@ -202,6 +202,7 @@ typeAddress(){
   }
 
   typePreferedData(){
+    cy.get("form[name='clientForm'] > h4:nth-of-type(4)").click();
     cy.get("#preferredIntake").type("2007-02-01");
 
     return this;
