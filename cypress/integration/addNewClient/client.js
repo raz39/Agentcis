@@ -39,7 +39,7 @@ describe("Test for adding new client ", () => {
   });
 
   context("form fill for create new client dependent test", () => {
-    beforeEach(() => {
+    beforeEach( function (){
       const firstName = faker.name.firstName();
       const phoneNumber = faker.phone.number("04########");
       const street = faker.address.streetAddress();
@@ -51,8 +51,10 @@ describe("Test for adding new client ", () => {
       const name = `${firstName} ${lastName}`;
 
       cy.wrap(name).as("name");
+      console.log(name)
       cy.wrap(email).as("email");
-      cy.wrap(name).as("name");
+
+      
 
       client
         .typeFirstName(firstName)
@@ -75,7 +77,7 @@ describe("Test for adding new client ", () => {
       cy.get(".submitButton").dblclick();
       client
         .verifyName("include.text", this.name)
-        .verifyEmail("include.text", this.email);
+        .verifyEmail("include.text",this.email);
     });
   });
 });

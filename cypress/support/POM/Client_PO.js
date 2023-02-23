@@ -55,6 +55,8 @@ class Client {
             cy.get("@name").dblclick();
           });
       });
+      cy.get("[name] .formPage-lg:nth-child(14) .stackable .column:nth-of-type(1) [aria-hidden]").click({
+        force: true})
     });
 
     return this;
@@ -77,7 +79,7 @@ class Client {
           });
       });
     });
-    cy.get("[name] .formPage-lg:nth-child(12) [aria-hidden]").click({
+    cy.get("[name] .formPage-lg:nth-child(12) .field:nth-of-type(1) [aria-hidden]").click({
       force: true,
     });
 
