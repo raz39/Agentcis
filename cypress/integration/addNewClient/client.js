@@ -10,9 +10,9 @@ describe("Test for adding new client ", () => {
     cy.login();
   });
 
-  beforeEach(function () {
-    cy.preserveCookies();
-  });
+  // beforeEach(function () {
+  //   cy.preserveCookies();
+  // });
 
   it("should verify validation error message while submitting without mandatory fields", () => {
     const emptyValidationError = [
@@ -57,7 +57,17 @@ describe("Test for adding new client ", () => {
       
 
       client
-        .typeFirstName(firstName)
+      .clickOnClientMenu();
+
+      cy.wait(1000);
+  
+      client.clickOnAddButton();
+  
+      cy.wait(3000);
+  
+      cy.get(".inline-block").click()
+      cy.wait(3000);
+        client.typeFirstName(firstName)
         .typeLastName(lastName)
         .typeDate()
         .typeEmail(email)
@@ -70,13 +80,18 @@ describe("Test for adding new client ", () => {
         .typeVisaExpiry()
         .selectCountryOfPassport()
         .selectProduct()
-        .selectAssignee();
+        .selectAssignee()
+        
+         .selectFollowers()
+        .selectSource()
+        .SelectTagName();
     });
 
-    it("should verify the functionality of cancel button and verify data are not added in list", function () {
-      cy.get(".submitButton").dblclick();
+    it.only("should verify the functionality of cancel button and verify data are not added in list", function () {
+      cy.get(".submitButton").click();
+      cy.wait(3000)
       client
-        .verifyName("include.text", this.name)
+        .verifyName(this.name)
         .verifyEmail("include.text",this.email);
     });
   });

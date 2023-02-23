@@ -18,7 +18,12 @@ class Client {
   }
 
   typeLastName(LastName) {
-    cy.get("input[name='last_name']").eq(1).click().clear().click().type(LastName);
+    cy.get("input[name='last_name']")
+      .eq(1)
+      .click()
+      .clear()
+      .click()
+      .type(LastName);
 
     return this;
   }
@@ -55,9 +60,9 @@ class Client {
             cy.get("@name").dblclick();
           });
       });
-      cy.get("[name] .formPage-lg:nth-child(14) .stackable .column:nth-of-type(1) [aria-hidden]").click({
-        force: true})
-    });
+      
+      });
+  
 
     return this;
   }
@@ -79,7 +84,9 @@ class Client {
           });
       });
     });
-    cy.get("[name] .formPage-lg:nth-child(12) .field:nth-of-type(1) [aria-hidden]").click({
+    cy.get(
+      "div[name='selectProducts'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-select-icon"
+    ).click({
       force: true,
     });
 
@@ -87,7 +94,9 @@ class Client {
   }
 
   selectCountryOfPassport() {
-    cy.get("div[name='countryPassport'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap").dblclick({
+    cy.get(
+      "div[name='countryPassport'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap"
+    ).dblclick({
       force: true,
     });
     cy.wait(2000);
@@ -107,8 +116,6 @@ class Client {
 
     return this;
   }
-  
-
 
   clickOnCancelButton() {
     cy.get(".pull-right .defaultButton.button").contains("Cancel").click();
@@ -152,82 +159,148 @@ class Client {
     cy.get(".ag-flex-column p").first().should(assertValue, email);
 
     return this;
-}
 
-verifyName(assertValue,fullName) {
-  cy.get(".ag-flex-column a").first().should(assertValue, fullName);
+  }
+  verifyName (fullName, assertValue="include.text") {
+    cy.get(".ag-flex-column a").first().then((name) =>{
+       expect(name.trim()).eq(fullName)
+    })
+  
+    return this;
+  }
+  
+  typeDate() {
+    cy.get("#DOB").type("2007-02-01");
+    cy.get("[max-date] .label").click();
 
-  return this;
-}
-typeDate(){
-cy.get("#DOB").type("2007-02-01")
-cy.get("[max-date] .label").click();
-
-return this;
-}
-
-typeClientId(){
-  cy.get("input[name='client_identifier']").dblclick().type("12");
-
-  return this;
-}
-
-typePhone(){
-cy.get(".ui.input").eq(3).type("0412345678");
-
-return this;
-}
-typeAddress(street,city,state,zip_code){
-  cy.get("h4:nth-of-type(3)").click();
-  cy.get("input[name='street'").type(street);
-  cy.get("input[name='city'").type(city);
-  cy.get("input[name='state'").type(state);
-  cy.get("input[name='zip_code'").type(zip_code);
-  cy.get("div[name='country'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap").dblclick({
-    force: true,
-  });
-  cy.wait(2000);
-  cy.get(".ag-select-list-wrapper li").then(($el) => {
-    const random = Math.floor(Math.random() * $el.length);
-    cy.get(".ag-select-element").then((text) => {
-      cy.wrap(text)
-        .eq(random)
-        .as("name")
-        .invoke("text")
-        .then((name) => {
-          cy.get("@name").click();
-          cy.log(name);
-        });
-    });
-  });
-  return this;
+    return this;
   }
 
-  typePreferedData(){
+  typeClientId() {
+    cy.get("input[name='client_identifier']").dblclick().type("12");
+
+    return this;
+  }
+
+  typePhone() {
+    cy.get(".ui.input").eq(3).type("0412345678");
+
+    return this;
+  }
+  typeAddress(street, city, state, zip_code) {
+    cy.get("h4:nth-of-type(3)").click();
+    cy.get("input[name='street'").type(street);
+    cy.get("input[name='city'").type(city);
+    cy.get("input[name='state'").type(state);
+    cy.get("input[name='zip_code'").type(zip_code);
+    cy.get(
+      "div[name='country'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap"
+    ).dblclick({
+      force: true,
+    });
+    cy.wait(2000);
+    cy.get(".ag-select-list-wrapper li").then(($el) => {
+      const random = Math.floor(Math.random() * $el.length);
+      cy.get(".ag-select-element").then((text) => {
+        cy.wrap(text)
+          .eq(random)
+          .as("name")
+          .invoke("text")
+          .then((name) => {
+            cy.get("@name").click();
+            cy.log(name);
+          });
+      });
+    });
+    return this;
+  }
+
+  typePreferedData() {
     cy.get("form[name='clientForm'] > h4:nth-of-type(4)").click();
     cy.get("#preferredIntake").type("2007-02-01");
 
     return this;
   }
 
-  typePassportNumber(){
+  typePassportNumber() {
     cy.get("input[name='passport_number']").type("1234567");
-  
+
     return this;
   }
 
-  typeVisaType(){
+  typeVisaType() {
     cy.get("input[name='visa_type']").type("none");
-  
+
     return this;
   }
 
-  typeVisaExpiry(){
+  typeVisaExpiry() {
     cy.get("#visaExpiry").type("2010-02-01");
 
     return this;
   }
 
+  selectFollowers() {
+    cy.get("div[name='followers'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap > .ag-select-label.truncate").dblclick()
+    cy.get(".ag-select-element").then(($el) => {
+      const random = Math.floor(Math.random() * $el.length);
+      cy.get(".ag-select-element").then((text) => {
+        cy.wrap(text)
+          .eq(random)
+          .as("name")
+          .invoke("text")
+          .then((name) => {
+            cy.get("@name").click();
+            cy.log(name);
+          });
+      });
+    });
+
+    return this;
+  }
+
+  selectSource() {
+    cy.get("div[name='source'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap").dblclick()
+    cy.get(".ag-select-element").then(($el) => {
+      const random = Math.floor(Math.random() * $el.length);
+      cy.get(".ag-select-element").then((text) => {
+        cy.wrap(text)
+          .eq(random)
+          .as("name")
+          .invoke("text")
+          .then((name) => {
+            cy.get("@name").click();
+            cy.log(name);
+          });
+      });
+    });
+
+    return this;
+  }
+
+  SelectTagName() {
+    cy.get(".column:nth-of-type(4) .ag-select-label").dblclick();
+    cy.wait(3000)
+    cy.get(".ag-select-element").then(($el) => {
+      const random = Math.floor(Math.random() * $el.length);
+      cy.get(".ag-select-element").then((text) => {
+        cy.wrap(text)
+          .eq(random)
+          .as("name")
+          .invoke("text")
+          .then((name) => {
+            cy.get("@name").click();
+            cy.log(name);
+            cy.get("div[name='tags'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-select-icon").click({
+              force: true,
+            });
+          });
+      });
+      
+      });
+
+    return this;
+  }
 }
 
 export default Client;
