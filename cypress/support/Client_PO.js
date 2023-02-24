@@ -1,18 +1,13 @@
+let assignee;
+let countryOfPassport;
+let followers;
+let sources;
+let tagName;
+
 class Client {
+
   typeFirstName(firstName) {
     cy.get("input[name='first_name']").eq(1).clear().type(firstName);
-
-    return this;
-  }
-
-  editFirstName(FirstName) {
-    cy.get("#first_name").clear().type(FirstName);
-
-    return this;
-  }
-
-  editLastName(LastName) {
-    cy.get("#last_name").clear().type(LastName);
 
     return this;
   }
@@ -54,15 +49,14 @@ class Client {
       cy.get(".ag-select-element").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("assignee")
           .invoke("text")
           .then((name) => {
-            cy.get("@name").dblclick();
+            cy.get("@assignee").dblclick();
+            assignee = name;
           });
       });
-      
-      });
-  
+    });
 
     return this;
   }
@@ -105,10 +99,11 @@ class Client {
       cy.get(".ag-select-element").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("countryOfPassport")
           .invoke("text")
           .then((name) => {
-            cy.get("@name").click();
+            cy.get("@countryOfPassport").click();
+            countryOfPassport = name.trim();
             cy.log(name);
           });
       });
@@ -125,12 +120,6 @@ class Client {
 
   typeEmail(email) {
     cy.get("input[name='email']").eq(1).clear().type(email);
-
-    return this;
-  }
-
-  editEmail(email) {
-    cy.get("#email").clear().type(email);
 
     return this;
   }
@@ -159,16 +148,14 @@ class Client {
     cy.get(".ag-flex-column p").first().should(assertValue, email);
 
     return this;
-
   }
-  verifyName (fullName, assertValue="include.text") {
-    cy.get(".ag-flex-column a").first().then((name) =>{
-       expect(name.trim()).eq(fullName)
-    })
-  
+  verifyName(fullName, assertValue = "include.text") {
+    cy.get(".ag-flex-column a")
+      .first().should(assertValue,fullName);
+
     return this;
   }
-  
+
   typeDate() {
     cy.get("#DOB").type("2007-02-01");
     cy.get("[max-date] .label").click();
@@ -187,6 +174,7 @@ class Client {
 
     return this;
   }
+
   typeAddress(street, city, state, zip_code) {
     cy.get("h4:nth-of-type(3)").click();
     cy.get("input[name='street'").type(street);
@@ -212,6 +200,7 @@ class Client {
           });
       });
     });
+
     return this;
   }
 
@@ -241,17 +230,19 @@ class Client {
   }
 
   selectFollowers() {
-    cy.get("div[name='followers'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap > .ag-select-label.truncate").dblclick()
+    cy.get(
+      "div[name='followers'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap > .ag-select-label.truncate"
+    ).dblclick();
     cy.get(".ag-select-element").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.get(".ag-select-element").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("followers")
           .invoke("text")
           .then((name) => {
-            cy.get("@name").click();
-            cy.log(name);
+            cy.get("@followers").dblclick();
+            followers = name;
           });
       });
     });
@@ -260,16 +251,19 @@ class Client {
   }
 
   selectSource() {
-    cy.get("div[name='source'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap").dblclick()
+    cy.get(
+      "div[name='source'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap"
+    ).dblclick();
     cy.get(".ag-select-element").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.get(".ag-select-element").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("source")
           .invoke("text")
           .then((name) => {
-            cy.get("@name").click();
+            cy.get("@source").click();
+            sources = name;
             cy.log(name);
           });
       });
@@ -280,24 +274,82 @@ class Client {
 
   SelectTagName() {
     cy.get(".column:nth-of-type(4) .ag-select-label").dblclick();
-    cy.wait(3000)
+    cy.wait(3000);
     cy.get(".ag-select-element").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.get(".ag-select-element").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("tagName")
           .invoke("text")
           .then((name) => {
-            cy.get("@name").click();
-            cy.log(name);
-            cy.get("div[name='tags'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-select-icon").click({
+            cy.get("@tagName").click();
+            tagName = name.trim();
+            cy.get(
+              "div[name='tags'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-select-icon"
+            ).click({
               force: true,
             });
           });
       });
-      
-      });
+    });
+
+    return this;
+  }
+
+  verifyTagName(assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+      assertValue,
+      tagName
+    );
+
+    return this;
+  }
+  verifyAssigne(assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+      assertValue,
+      assignee
+    );
+
+    return this;
+  }
+  verifyCountryOfPassport(assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(12)").should(
+      assertValue,
+      countryOfPassport
+    );
+
+    return this;
+  }
+  verifyFollowers(assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+      assertValue,
+      followers
+    );
+
+    return this;
+  }
+
+  verifySources(assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+      assertValue,
+      sources
+    );
+
+    return this;
+  }
+
+  verifyPhone(phone, assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+      assertValue,
+      phone
+    );
+
+    return this;
+  }
+
+  verifyCurrentCity(city, assertValue = "include.text") {
+    cy.get("td:nth-of-type(13) > span").first().should(assertValue, city);
 
     return this;
   }

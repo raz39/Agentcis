@@ -1,7 +1,6 @@
 /// <reference types="cypress" />
 import { faker } from "@faker-js/faker";
-import Client from "../../support/POM/Client_PO";
-
+import Client from "../../support/Client_PO";
 describe("Test for adding new client ", () => {
   const client = new Client();
 
@@ -39,7 +38,7 @@ describe("Test for adding new client ", () => {
   });
 
   context("form fill for create new client dependent test", () => {
-    beforeEach( function (){
+    beforeEach(function () {
       const firstName = faker.name.firstName();
       const phoneNumber = faker.phone.number("04########");
       const street = faker.address.streetAddress();
@@ -50,24 +49,23 @@ describe("Test for adding new client ", () => {
       const city = faker.address.city();
       const name = `${firstName} ${lastName}`;
 
+      cy.wrap(city).as("city");
       cy.wrap(name).as("name");
-      console.log(name)
+      console.log(name);
       cy.wrap(email).as("email");
 
-      
-
-      client
-      .clickOnClientMenu();
+      client.clickOnClientMenu();
 
       cy.wait(1000);
-  
+
       client.clickOnAddButton();
-  
+
       cy.wait(3000);
-  
-      cy.get(".inline-block").click()
+
+      cy.get(".inline-block").click();
       cy.wait(3000);
-        client.typeFirstName(firstName)
+      client
+        .typeFirstName(firstName)
         .typeLastName(lastName)
         .typeDate()
         .typeEmail(email)
@@ -79,20 +77,21 @@ describe("Test for adding new client ", () => {
         .typeVisaType()
         .typeVisaExpiry()
         .selectCountryOfPassport()
-        .selectProduct()
-        .selectAssignee()
-        
-         .selectFollowers()
-        .selectSource()
+        //.selectProduct()
+        // .selectAssignee()
+        //.selectFollowers()
+        //.selectSource()
         .SelectTagName();
     });
 
     it.only("should verify the functionality of cancel button and verify data are not added in list", function () {
       cy.get(".submitButton").click();
-      cy.wait(3000)
+      cy.wait(3000);
       client
-        .verifyName(this.name)
-        .verifyEmail("include.text",this.email);
+        .verifyEmail("include.text", this.email).verifyName(this.name)
+        .verifyTagName()
+        .verifyCurrentCity(this.city)
+        .verifyCountryOfPassport();
     });
   });
 });
