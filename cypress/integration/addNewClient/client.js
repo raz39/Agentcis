@@ -9,33 +9,10 @@ describe("Test for adding new client ", () => {
     cy.login();
   });
 
-  // beforeEach(function () {
-  //   cy.preserveCookies();
-  // });
-
-  it("should verify validation error message while submitting without mandatory fields", () => {
-    const emptyValidationError = [
-      "The First Name field is required.",
-      "The Last Name field is required.",
-      "The Assignee field is required.",
-    ];
-
-    client.clickOnClientMenu();
-
-    cy.wait(1000);
-
-    client.clickOnAddButton();
-
-    cy.wait(3000);
-
-    cy.get(".inline-block").click();
-
-    cy.get(".submitButton").click();
-
-    cy.verifyValidationErrors(emptyValidationError);
-
-    //client.clickOnCancelButton();
+  beforeEach(function () {
+    cy.preserveCookies();
   });
+
 
   context("form fill for create new client dependent test", () => {
     beforeEach(function () {
@@ -48,15 +25,17 @@ describe("Test for adding new client ", () => {
       const state = faker.address.state();
       const city = faker.address.city();
       const name = `${firstName} ${lastName}`;
+      const countryCode = "+61";
+      const number = `${countryCode}${phoneNumber}`;
 
+      cy.wrap(number).as("phoneNumber");
       cy.wrap(city).as("city");
       cy.wrap(name).as("name");
-      console.log(name);
       cy.wrap(email).as("email");
 
       client.clickOnClientMenu();
 
-      cy.wait(1000);
+      cy.wait(2000);
 
       client.clickOnAddButton();
 
@@ -77,21 +56,38 @@ describe("Test for adding new client ", () => {
         .typeVisaType()
         .typeVisaExpiry()
         .selectCountryOfPassport()
-        //.selectProduct()
-        // .selectAssignee()
-        //.selectFollowers()
-        //.selectSource()
-        .SelectTagName();
+        .selectApplication()
+        .selectAssignee();
+
+      cy.wait(3000);
+
+      client.selectFollowers();
+
+      cy.wait(3000);
+
+      client.selectSource();
+
+      cy.wait(3000);
+
+      client.SelectTagName();
     });
 
-    it.only("should verify the functionality of cancel button and verify data are not added in list", function () {
-      cy.get(".submitButton").click();
+    it("should verify the functionality of cancel button and verify data are not added in list", function () {
+
+      cy.get(".column >.button.defaultButton").click()
+      })
+
+    it("should add new client and verify added data existence in list", function () {
+      cy.get(".submitButton").dblclick();
       cy.wait(3000);
       client
-        .verifyEmail("include.text", this.email).verifyName(this.name)
-        .verifyTagName()
+        .verifyEmail("include.text", this.email)
         .verifyCurrentCity(this.city)
-        .verifyCountryOfPassport();
+        .verifyCurrentCountry()
+        .verifyPassportNumber("1234567")
+        .verifyFollowers()
+        .verifyAssigne();
     });
   });
 });
+

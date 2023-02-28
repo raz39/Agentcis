@@ -3,9 +3,9 @@ let countryOfPassport;
 let followers;
 let sources;
 let tagName;
+let currentCountry;
 
 class Client {
-
   typeFirstName(firstName) {
     cy.get("input[name='first_name']").eq(1).clear().type(firstName);
 
@@ -43,7 +43,6 @@ class Client {
 
   selectAssignee() {
     cy.get("div[name='assignee'] > div[role='combobox'] i").dblclick();
-
     cy.get(".form li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.get(".ag-select-element").then((text) => {
@@ -53,7 +52,7 @@ class Client {
           .invoke("text")
           .then((name) => {
             cy.get("@assignee").dblclick();
-            assignee = name;
+            assignee = name.replace(/\((.*?)\)/g, "").trim();
           });
       });
     });
@@ -61,7 +60,7 @@ class Client {
     return this;
   }
 
-  selectProduct() {
+  selectApplication() {
     cy.get("div[name='selectProducts'] > div[role='combobox']").dblclick({
       force: true,
     });
@@ -71,10 +70,10 @@ class Client {
       cy.get("li[role='option'] > div > div:nth-of-type(1)").then((text) => {
         cy.wrap(text)
           .eq(random)
-          .as("name")
+          .as("application")
           .invoke("text")
           .then((name) => {
-            cy.get("@name").click();
+            cy.get("@application").click();
           });
       });
     });
@@ -93,20 +92,17 @@ class Client {
     ).dblclick({
       force: true,
     });
-    cy.wait(2000);
+    cy.wait(3000);
     cy.get(".ag-select-list-wrapper li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
-      cy.get(".ag-select-element").then((text) => {
-        cy.wrap(text)
-          .eq(random)
-          .as("countryOfPassport")
-          .invoke("text")
-          .then((name) => {
-            cy.get("@countryOfPassport").click();
-            countryOfPassport = name.trim();
-            cy.log(name);
-          });
-      });
+      cy.wrap($el)
+        .eq(random)
+        .as("countryOfPassport")
+        .invoke("text")
+        .then((name) => {
+          cy.get("@countryOfPassport").click();
+          countryOfPassport = name.trim();
+        });
     });
 
     return this;
@@ -119,7 +115,7 @@ class Client {
   }
 
   typeEmail(email) {
-    cy.get("input[name='email']").eq(1).clear().type(email);
+    cy.get("input[name='email']").eq(1).click().clear().click().type(email);
 
     return this;
   }
@@ -149,9 +145,9 @@ class Client {
 
     return this;
   }
+
   verifyName(fullName, assertValue = "include.text") {
-    cy.get(".ag-flex-column a")
-      .first().should(assertValue,fullName);
+    cy.get(".ag-flex-column a").first().should(assertValue, fullName);
 
     return this;
   }
@@ -169,8 +165,8 @@ class Client {
     return this;
   }
 
-  typePhone() {
-    cy.get(".ui.input").eq(3).type("0412345678");
+  typePhone(phone) {
+    cy.get(".ui.input").eq(3).type(phone);
 
     return this;
   }
@@ -186,19 +182,18 @@ class Client {
     ).dblclick({
       force: true,
     });
-    cy.wait(2000);
+    cy.wait(3000);
     cy.get(".ag-select-list-wrapper li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
-      cy.get(".ag-select-element").then((text) => {
-        cy.wrap(text)
-          .eq(random)
-          .as("name")
-          .invoke("text")
-          .then((name) => {
-            cy.get("@name").click();
-            cy.log(name);
-          });
-      });
+      cy.wrap($el)
+        .eq(random)
+        .as("name")
+        .invoke("text")
+        .then((name) => {
+          cy.get("@name").click();
+          currentCountry = name.trim();
+          cy.log(name);
+        });
     });
 
     return this;
@@ -230,74 +225,70 @@ class Client {
   }
 
   selectFollowers() {
-    cy.get(
-      "div[name='followers'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap > .ag-select-label.truncate"
-    ).dblclick();
+    cy.get("div[name='followers'] > div[role='combobox']").dblclick();
     cy.get(".ag-select-element").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
-      cy.get(".ag-select-element").then((text) => {
-        cy.wrap(text)
-          .eq(random)
-          .as("followers")
-          .invoke("text")
-          .then((name) => {
-            cy.get("@followers").dblclick();
-            followers = name;
+      cy.wrap($el).eq(random).as("followers");
+      cy.log("followers")
+        .invoke("text")
+        .then((name) => {
+          cy.get("@followers").click({
+            force: true,
           });
-      });
+          cy.log(name);
+          followers = name.trim().replace(/\((.*?)\)/g, "");
+        });
     });
 
     return this;
   }
 
   selectSource() {
-    cy.get(
-      "div[name='source'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap"
-    ).dblclick();
+    cy.get("div[name='source'] > div[role='combobox']").dblclick({
+      force: true,
+    });
     cy.get(".ag-select-element").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
-      cy.get(".ag-select-element").then((text) => {
-        cy.wrap(text)
-          .eq(random)
-          .as("source")
-          .invoke("text")
-          .then((name) => {
-            cy.get("@source").click();
-            sources = name;
-            cy.log(name);
-          });
-      });
+      cy.wrap($el)
+        .eq(random)
+        .as("source")
+        .invoke("text")
+        .then((name) => {
+          cy.get("@source").click();
+          sources = name;
+        });
     });
 
     return this;
   }
 
   SelectTagName() {
-    cy.get(".column:nth-of-type(4) .ag-select-label").dblclick();
+    cy.get("div[name='tags'] > div[role='combobox'] .ag-select-icon").dblclick({
+      force: true,
+    });
     cy.wait(3000);
     cy.get(".ag-select-element").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
-      cy.get(".ag-select-element").then((text) => {
-        cy.wrap(text)
-          .eq(random)
-          .as("tagName")
-          .invoke("text")
-          .then((name) => {
-            cy.get("@tagName").click();
-            tagName = name.trim();
-            cy.get(
-              "div[name='tags'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-select-icon"
-            ).click({
-              force: true,
-            });
+      cy.wrap($el)
+        .eq(random)
+        .as("tagName")
+        .invoke("text")
+        .then((name) => {
+          cy.get("@tagName").click();
+          tagName = name.trim();
+          cy.get(
+            "div[name='tags'] > div[role='combobox'] .ag-select-icon"
+          ).click({
+            force: true,
           });
-      });
+        });
     });
 
     return this;
   }
 
   verifyTagName(assertValue = "include.text") {
+    console.log(tagName);
     cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
       assertValue,
       tagName
@@ -306,23 +297,24 @@ class Client {
     return this;
   }
   verifyAssigne(assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+    cy.get("tr:nth-of-type(1) > td:nth-of-type(12)").should(
       assertValue,
       assignee
     );
 
     return this;
   }
+
   verifyCountryOfPassport(assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(12)").should(
-      assertValue,
-      countryOfPassport
-    );
+    cy.get("td:nth-of-type(11)> span >p")
+      .first()
+      .should(assertValue, countryOfPassport);
 
     return this;
   }
+
   verifyFollowers(assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(13) .ag-flex").should(
       assertValue,
       followers
     );
@@ -340,7 +332,7 @@ class Client {
   }
 
   verifyPhone(phone, assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").should(
       assertValue,
       phone
     );
@@ -349,7 +341,24 @@ class Client {
   }
 
   verifyCurrentCity(city, assertValue = "include.text") {
-    cy.get("td:nth-of-type(13) > span").first().should(assertValue, city);
+    cy.get("td:nth-of-type(11) > span").first().should(assertValue, city);
+
+    return this;
+  }
+
+  verifyCurrentCountry(assertValue = "include.text") {
+    cy.get("td:nth-of-type(11)> span >p")
+      .first()
+      .should(assertValue, currentCountry);
+
+    return this;
+  }
+
+  verifyPassportNumber(passportNumber, assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(10)").should(
+      assertValue,
+      passportNumber
+    );
 
     return this;
   }
