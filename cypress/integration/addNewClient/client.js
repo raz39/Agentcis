@@ -41,10 +41,10 @@ describe("Test for adding new client ", () => {
       const firstName = faker.name.firstName();
       const lastName = faker.name.lastName();
       const email = faker.internet.email();
-      const name = `${firstName} ${lastName}`;
+      const fullName = `${firstName} ${lastName}`.trim();
 
       cy.wrap(email).as("email");
-      cy.wrap(name).as("name");
+      cy.wrap(fullName).as("fullName");
 
       client.clickOnClientMenu();
 
@@ -54,38 +54,42 @@ describe("Test for adding new client ", () => {
 
       cy.wait(2000);
 
-      client.typeFirstName(firstName).typeLastName(lastName).typeEmail(email);
+      client
+        .typeFirstName(firstName)
+        .typeLastName(lastName)
+        .typeEmail(email)
+        .selectAssignee()
+        .selectApplication();
     });
 
     it("should click on cancel button and verify added data inexistence in list", function () {
       client
-        .selectAssignee()
-        .selectApplication()
         .clickOnCancelButton()
-        .verifyName(this.name,"not.have.text").verifyEmail(this.email,"not.have.text");
+        .verifyName(this.fullName, "not.have.text")
+        .verifyEmail(this.email, "not.have.text");
     });
 
     it("should add new client and verify added data existence in list", function () {
-      client.selectAssignee().selectApplication().clickOnSaveButton();
+      client.clickOnSaveButton();
 
       cy.wait(5000);
 
-      client.verifyName(this.name).verifyEmail(this.email);
-
+      client.verifyName(this.fullName).verifyEmail(this.email);
     });
 
     it("should add new client and verify edited data existence in list", function () {
       const firstName = faker.name.firstName();
       const lastName = faker.name.lastName();
       const email = faker.internet.email();
-      const fullName = `${firstName} ${lastName}`;
+      const fullName = `${firstName} ${lastName}`.trim();
 
-      client.selectAssignee().selectApplication().clickOnSaveButton();
+      client.clickOnSaveButton();
 
       cy.wait(4000);
 
       client
-        .verifyName(this.name).verifyEmail(this.email)
+        .verifyName(this.fullName)
+        .verifyEmail(this.email)
         .clickOnActionButton()
         .clickOnDropDownMenu("Edit");
 
