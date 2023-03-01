@@ -228,14 +228,16 @@ class Client {
     cy.get("div[name='followers'] > div[role='combobox']").dblclick();
     cy.get(".ag-select-element").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
-      cy.wrap($el).eq(random).as("followers");
-      cy.log("followers")
+      cy.wrap($el)
+        .eq(random)
+        .as("followers")
+
         .invoke("text")
         .then((name) => {
           cy.get("@followers").click({
             force: true,
           });
-          cy.log(name);
+
           followers = name.trim().replace(/\((.*?)\)/g, "");
         });
     });
