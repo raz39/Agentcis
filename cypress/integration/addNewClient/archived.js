@@ -30,8 +30,8 @@ describe("Test for adding new client ", () => {
         cy.wait(4000);
         cy.get("[href='#/contacts/archived']").click();
         cy.wait(4000);
-        client.verifyName("have.text",rajeev);
-        
+        client.verifyName("have.text", rajeev);
+
         cy.wait(4000);
 
         client.clickOnActionButton().clickOnDropDownMenu("Restore");
@@ -39,8 +39,7 @@ describe("Test for adding new client ", () => {
         cy.get(".accept").click();
         cy.wait(4000);
         cy.get("[href='#/contacts/prospects']").click();
-        client.verifyName("have.text",rajeev);
-       
+        client.verifyName("have.text", rajeev);
 
         client.clickOnActionButton().clickOnDropDownMenu("Archive");
 
@@ -52,24 +51,23 @@ describe("Test for adding new client ", () => {
         client.clickOnActionButton().clickOnDropDownMenu("Delete");
 
         cy.get(".accept").click();
+
         //since the deleted data is not remove from the table unless we refresh the page.
         cy.reload();
-        client.verifyName("not.have.text",rajeev);
-        
+        client.verifyName("not.have.text", rajeev);
       });
   });
 
-it("should verify validation error message while submitting without mandatory fields", () => {
-  client.clickOnServicesMenu()
-  cy.wait(3000)
-  client.selectService()
-  cy.wait(3000)
-  client.selectFor();
-  cy.wait(3000)
-  cy.get("[class='field col-hr-1 ag-flex-shrink-0 ag-flex-grow-3'] [type]").type("ENS");
-  cy.get("[class='button blueButton width-100p']").click()
-
-});
-
-
+  it("should verify validation error message while submitting without mandatory fields", () => {
+    client.clickOnServicesMenu();
+    cy.wait(3000);
+    client.selectService();
+    cy.wait(3000);
+    client.selectFor();
+    cy.wait(3000);
+    cy.get(
+      "[class='field col-hr-1 ag-flex-shrink-0 ag-flex-grow-3'] [type]"
+    ).type("ENS");
+    cy.get("[class='button blueButton width-100p']").click();
+  });
 });
