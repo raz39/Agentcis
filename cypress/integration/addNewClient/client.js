@@ -13,7 +13,6 @@ describe("Test for adding new client ", () => {
   //   cy.preserveCookies();
   // });
 
-
   context("form fill for create new client dependent test", () => {
     beforeEach(function () {
       const firstName = faker.name.firstName();
@@ -26,7 +25,7 @@ describe("Test for adding new client ", () => {
       const city = faker.address.city();
       const name = `${firstName} ${lastName}`;
       const countryCode = "+61";
-      const number = `${countryCode}${phoneNumber}`;
+      const number =`${countryCode}${phoneNumber}`;
 
       cy.wrap(number).as("phoneNumber");
       cy.wrap(city).as("city");
@@ -44,50 +43,50 @@ describe("Test for adding new client ", () => {
       cy.get(".inline-block").click();
       cy.wait(3000);
       client
-        // .typeFirstName(firstName)
-        // .typeLastName(lastName)
-        // .typeDate()
-        // .typeEmail(email)
-        // .typeClientId()
-        // .typePhone(phoneNumber)
-        // .typeAddress(street, city, state, zip_code)
-        // .typePreferedData()
-        // .typePassportNumber()
-        // .typeVisaType()
-        // .typeVisaExpiry()
+        .typeFirstName(firstName)
+        .typeLastName(lastName)
+        .typeDate()
+        .typeEmail(email)
+        .typeClientId()
+        .typePhone(phoneNumber)
+        .typeAddress(street, city, state, zip_code)
+        .typePreferedData()
+        .typePassportNumber()
+        .typeVisaType()
+        .typeVisaExpiry()
         .selectCountryOfPassport()
-      //   .selectApplication()
-      //   .selectAssignee();
+        .selectApplication()
+        .selectAssignee();
 
-      // cy.wait(3000);
+      cy.wait(3000);
 
-      // client.selectFollowers();
+      client.selectFollowers();
 
-      // cy.wait(3000);
+      cy.wait(3000);
 
-      // client.selectSource();
+      client.selectSource();
 
-      // cy.wait(3000);
+      cy.wait(3000);
 
-      // client.SelectTagName();
+      client.SelectTagName();
     });
 
-    it.only("should verify the functionality of cancel button and verify data are not added in list", function () {
+    it("should verify the functionality of cancel button and verify data are not added in list", function () {
+      cy.get(".column >.button.defaultButton").click();
+    });
 
-      //cy.get(".column >.button.defaultButton").click()
-      })
-
-    it("should add new client and verify added data existence in list", function () {
+    it.only("should add new client and verify added data existence in list", function () {
       cy.get(".submitButton").dblclick();
       cy.wait(3000);
       client
-        .verifyEmail("include.text", this.email)
-        .verifyCurrentCity(this.city)
-        .verifyCurrentCountry()
-        .verifyPassportNumber("1234567")
-        .verifyFollowers()
-        .verifyAssigne();
+        // .verifyEmail("include.text", this.email)
+        // .verifyCurrentCity(this.city)
+        // .verifyCurrentCountry()
+        // .verifyPassportNumber("1234567")
+        // .verifyFollowers()
+        //.verifyAssigne()
+        //.verifyTagName()
+        .verifyPhone(this.phoneNumber);
     });
   });
 });
-

@@ -4,6 +4,7 @@ let followers;
 let sources;
 let tagName;
 let currentCountry;
+let phone
 
 class Client {
   typeFirstName(firstName) {
@@ -277,12 +278,12 @@ class Client {
         .invoke("text")
         .then((name) => {
           cy.get("@tagName").click();
-          tagName = name.trim();
           cy.get(
             "div[name='tags'] > div[role='combobox'] .ag-select-icon"
           ).click({
             force: true,
           });
+          tagName = name.trim();
         });
     });
 
@@ -290,7 +291,6 @@ class Client {
   }
 
   verifyTagName(assertValue = "include.text") {
-    console.log(tagName);
     cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
       assertValue,
       tagName
@@ -333,11 +333,21 @@ class Client {
     return this;
   }
 
-  verifyPhone(phone, assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").should(
-      assertValue,
-      phone
-    );
+  // verifyPhone(phone, assertValue = "include.text") {
+  //   cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").should(
+  //     assertValue,
+  //     phone
+  //   );
+
+  //   return this;
+  // }
+
+  verifyPhone(phones, assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").then((rajeev) => {
+      cy.log(rajeev)
+      phone =rajeev.trim()
+      expect(phone).to.contain.text(phones);
+    });
 
     return this;
   }
