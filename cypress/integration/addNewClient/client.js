@@ -41,7 +41,7 @@ describe("Test for adding new client ", () => {
       const firstName = faker.name.firstName();
       const lastName = faker.name.lastName();
       const email = faker.internet.email();
-      const fullName = `${firstName} ${lastName}`.trim();
+      const fullName = `${firstName} ${lastName}`;
 
       cy.wrap(email).as("email");
       cy.wrap(fullName).as("fullName");
@@ -81,7 +81,7 @@ describe("Test for adding new client ", () => {
       const firstName = faker.name.firstName();
       const lastName = faker.name.lastName();
       const email = faker.internet.email();
-      const fullName = `${firstName} ${lastName}`.trim();
+      const fullName = `${firstName} ${lastName}`;
 
       client.clickOnSaveButton();
 

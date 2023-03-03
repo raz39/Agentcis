@@ -17,13 +17,13 @@ class Client {
     return this;
   }
 
-  typeLastName(LastName) {
+  typeLastName(lastName) {
     cy.get("input[name='last_name']")
       .eq(1)
       .click()
       .clear()
       .click()
-      .type(LastName);
+      .type(lastName);
 
     return this;
   }
@@ -97,6 +97,7 @@ class Client {
 
     return this;
   }
+  
   typeEmail(email) {
     cy.get("input[name='email']").eq(1).click().clear().click().type(email);
 
@@ -135,8 +136,8 @@ class Client {
     return this;
 }
 
-verifyName(Name,assertValue="include.text") {
-  cy.get(".ag-flex-column a").first().should(assertValue,Name);
+verifyName(name,assertValue="include.text") {
+  cy.get(".ag-flex-column a").first().should(assertValue,name);
 
   return this;
 }
