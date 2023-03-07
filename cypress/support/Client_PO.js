@@ -4,7 +4,7 @@ let followers;
 let sources;
 let tagName;
 let currentCountry;
-let phone
+let phone;
 
 class Client {
   typeFirstName(firstName) {
@@ -13,13 +13,13 @@ class Client {
     return this;
   }
 
-  typeLastName(LastName) {
+  typeLastName(lastName) {
     cy.get("input[name='last_name']")
       .eq(1)
       .click()
       .clear()
       .click()
-      .type(LastName);
+      .type(lastName);
 
     return this;
   }
@@ -65,7 +65,9 @@ class Client {
     cy.get("div[name='selectProducts'] > div[role='combobox']").dblclick({
       force: true,
     });
+
     cy.wait(2000);
+
     cy.get(".form li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.get("li[role='option'] > div > div:nth-of-type(1)").then((text) => {
@@ -93,7 +95,9 @@ class Client {
     ).dblclick({
       force: true,
     });
+
     cy.wait(3000);
+
     cy.get(".ag-select-list-wrapper li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.wrap($el)
@@ -141,7 +145,7 @@ class Client {
     return this;
   }
 
-  verifyEmail(assertValue, email) {
+  verifyEmail(email, assertValue = "include.text") {
     cy.get(".ag-flex-column p").first().should(assertValue, email);
 
     return this;
@@ -153,15 +157,19 @@ class Client {
     return this;
   }
 
-  typeDate() {
-    cy.get("#DOB").type("2007-02-01");
+  typeDateOfBirth(date) {
+    cy.get("#DOB").type(date);
     cy.get("[max-date] .label").click();
 
     return this;
   }
 
-  typeClientId() {
-    cy.get("input[name='client_identifier']").dblclick().type("12");
+  typeClientId(clientId) {
+    cy.get("input[name='client_identifier']")
+      .click()
+      .clear()
+      .click()
+      .type(clientId);
 
     return this;
   }
@@ -177,13 +185,12 @@ class Client {
     cy.get("input[name='street'").type(street);
     cy.get("input[name='city'").type(city);
     cy.get("input[name='state'").type(state);
-    cy.get("input[name='zip_code'").type(zip_code);
+    cy.get("input[name='zip_code'").click().clear().click().type(zip_code);
     cy.get(
       "div[name='country'] > div[role='combobox'] > .ag-flex.ag-space-between > .ag-align-center.ag-flex.ag-select-wrap"
     ).dblclick({
       force: true,
     });
-    cy.wait(3000);
     cy.get(".ag-select-list-wrapper li").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.wrap($el)
@@ -193,34 +200,33 @@ class Client {
         .then((name) => {
           cy.get("@name").click();
           currentCountry = name.trim();
-          cy.log(name);
         });
     });
 
     return this;
   }
 
-  typePreferedData() {
+  typePreferedData(date) {
     cy.get("form[name='clientForm'] > h4:nth-of-type(4)").click();
-    cy.get("#preferredIntake").type("2007-02-01");
+    cy.get("#preferredIntake").type(date);
 
     return this;
   }
 
-  typePassportNumber() {
-    cy.get("input[name='passport_number']").type("1234567");
+  typePassportNumber(passportNumber) {
+    cy.get("input[name='passport_number']").type(passportNumber);
 
     return this;
   }
 
-  typeVisaType() {
-    cy.get("input[name='visa_type']").type("none");
+  typeVisaType(visaType) {
+    cy.get("input[name='visa_type']").click().clear().click().type(visaType);
 
     return this;
   }
 
-  typeVisaExpiry() {
-    cy.get("#visaExpiry").type("2010-02-01");
+  typeVisaExpiry(date) {
+    cy.get("#visaExpiry").type(date);
 
     return this;
   }
@@ -232,13 +238,11 @@ class Client {
       cy.wrap($el)
         .eq(random)
         .as("followers")
-
         .invoke("text")
         .then((name) => {
           cy.get("@followers").click({
             force: true,
           });
-
           followers = name.trim().replace(/\((.*?)\)/g, "");
         });
     });
@@ -265,7 +269,7 @@ class Client {
     return this;
   }
 
-  SelectTagName() {
+  selectTagName() {
     cy.get("div[name='tags'] > div[role='combobox'] .ag-select-icon").dblclick({
       force: true,
     });
@@ -298,6 +302,7 @@ class Client {
 
     return this;
   }
+
   verifyAssigne(assertValue = "include.text") {
     cy.get("tr:nth-of-type(1) > td:nth-of-type(12)").should(
       assertValue,
@@ -333,21 +338,11 @@ class Client {
     return this;
   }
 
-  // verifyPhone(phone, assertValue = "include.text") {
-  //   cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").should(
-  //     assertValue,
-  //     phone
-  //   );
-
-  //   return this;
-  // }
-
-  verifyPhone(phones, assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").then((rajeev) => {
-      cy.log(rajeev)
-      phone =rajeev.trim()
-      expect(phone).to.contain.text(phones);
-    });
+  verifyPhone(phone, assertValue = "include.text") {
+    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").should(
+      assertValue,
+      phone
+    );
 
     return this;
   }
