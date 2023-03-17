@@ -18,17 +18,17 @@ describe("Test for adding new client ", () => {
   context("form fill for create new client dependent test", () => {
     beforeEach(function () {
       const firstName = faker.name.firstName();
-      const phoneNumber = faker.phone.number("04########");
+      const phoneNumber = faker.phone.number("42#######");
       const street = faker.address.streetAddress();
       const lastName = faker.name.lastName();
       const email = faker.internet.email();
-      const zip_code = faker.address.zipCode();
+      const zip_Code = faker.address.zipCode();
       const state = faker.address.state();
       const city = faker.address.city();
       const passportNumber = faker.random.numeric(9);
-      const dob = format(faker.date.birthdate(), "yyyy-MM-dd");
-      const preferredIntake = format(faker.date.future(), "yyyy-MM-dd");
-      const visaExpiryDate = format(faker.date.future(), "yyyy-MM-dd");
+      const dob = format(faker.date.birthdate(), "MM-dd-yyyy");
+      const preferredIntake = format(faker.date.future(), "MM-dd-yyyy");
+      const visaExpiryDate = format(faker.date.future(), "MM-dd-yyyy");
       const visaType = faker.word.adjective();
       const clientId = faker.random.numeric(2);
       const name = `${firstName} ${lastName}`;
@@ -41,16 +41,27 @@ describe("Test for adding new client ", () => {
       cy.wrap(email).as("email");
       cy.wrap(passportNumber).as("passportNumber");
 
+      cy.intercept(
+        "https://360degreetest.staging.agentcis.com/api/v2/custom-fields/client/filter").as("list");
+
       client.clickOnClientMenu();
 
-      cy.wait(2000);
+      cy.wait("@list");
 
       client.clickOnAddButton();
 
-      cy.wait(3000);
-
       cy.get(".inline-block").click();
-      cy.wait(3000);
+
+      cy.intercept("https://360degreetest.staging.agentcis.com/api/user").as("user");
+
+      cy.wait('@user');
+
+      cy.get("#uploadProfileImage").attachFile("photo.jpg");
+
+      cy.wait(2000)
+
+      cy.get("main#profileImageUpload-content .blueButton.button").click();
+      cy.get("[class='text-center col-v-1'] .text-muted").click();
 
       client
         .typeFirstName(firstName)
@@ -59,7 +70,7 @@ describe("Test for adding new client ", () => {
         .typeClientId(clientId)
         .typeEmail(email)
         .typePhone(phoneNumber)
-        .typeAddress(street, city, state, zip_code)
+        .typeAddress(street, city, state, zip_Code)
         .typePreferedData(preferredIntake)
         .selectCountryOfPassport()
         .typePassportNumber(passportNumber)
@@ -81,9 +92,14 @@ describe("Test for adding new client ", () => {
       client.selectTagName();
     });
 
-    it("should verify the functionality of cancel button and verify data are inexistence in list", function () {
+    it("should click on cancel button and verify data inexistence in list", function () {
       cy.get(".column >.button.defaultButton").click();
-      cy.wait(3000);
+
+      cy.intercept(
+        "https://360degreetest.staging.agentcis.com/api/v2/custom-fields/client/filter").as("list");
+
+      cy.wait("@list");
+
       client
         .verifyEmail(this.email, "not.have.text")
         .verifyCurrentCity(this.city, "not.have.text")
@@ -96,11 +112,14 @@ describe("Test for adding new client ", () => {
     });
 
     it("should add new client and verify added data existence in list", function () {
-      cy.wait(3000);
+      cy.intercept(
+        "https://360degreetest.staging.agentcis.com/api/v2/custom-fields/client/filter").as("list");
+
       cy.get(".submitButton").click({
         force: true,
       });
-      cy.wait(3000);
+
+      cy.wait("@list");
 
       client
         .verifyEmail(this.email)

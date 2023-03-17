@@ -4,7 +4,6 @@ let followers;
 let sources;
 let tagName;
 let currentCountry;
-let phone;
 
 class Client {
   typeFirstName(firstName) {
@@ -121,14 +120,6 @@ class Client {
 
   typeEmail(email) {
     cy.get("input[name='email']").eq(1).click().clear().click().type(email);
-
-    return this;
-  }
-
-  dataValidation(selector, validation, formElement) {
-    cy.get(selector).each((selector, index) => {
-      cy.get(selector).should(validation, formElement[index]);
-    });
 
     return this;
   }
@@ -294,76 +285,76 @@ class Client {
     return this;
   }
 
-  verifyTagName(assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
-      assertValue,
+  verifyTagName(assertion = "include.text") {
+    cy.get("tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
+      assertion,
       tagName
     );
 
     return this;
   }
 
-  verifyAssigne(assertValue = "include.text") {
+  verifyAssigne(assertion = "include.text") {
     cy.get("tr:nth-of-type(1) > td:nth-of-type(12)").should(
-      assertValue,
+      assertion,
       assignee
     );
 
     return this;
   }
 
-  verifyCountryOfPassport(assertValue = "include.text") {
+  verifyCountryOfPassport(assertion = "include.text") {
     cy.get("td:nth-of-type(11)> span >p")
       .first()
-      .should(assertValue, countryOfPassport);
+      .should(assertion, countryOfPassport);
 
     return this;
   }
 
-  verifyFollowers(assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(13) .ag-flex").should(
-      assertValue,
+  verifyFollowers(assertion = "include.text") {
+    cy.get("tr:nth-of-type(1) td:nth-of-type(13) .ag-flex").should(
+      assertion,
       followers
     );
 
     return this;
   }
 
-  verifySources(assertValue = "include.text") {
+  verifySources(assertion = "include.text") {
     cy.get("tbody tr:nth-of-type(1) td:nth-of-type(4) .ag-flex").should(
-      assertValue,
+      assertion,
       sources
     );
 
     return this;
   }
 
-  verifyPhone(phone, assertValue = "include.text") {
-    cy.get("tbody tr:nth-of-type(1) td:nth-of-type(8)").should(
-      assertValue,
+  verifyPhone(phone, assertion = "include.text") {
+    cy.get("tr:nth-of-type(1) td:nth-of-type(8)").should(
+      assertion,
       phone
     );
 
     return this;
   }
 
-  verifyCurrentCity(city, assertValue = "include.text") {
-    cy.get("td:nth-of-type(11) > span").first().should(assertValue, city);
+  verifyCurrentCity(city, assertion = "include.text") {
+    cy.get("td:nth-of-type(11) > span").first().should(assertion, city);
 
     return this;
   }
 
-  verifyCurrentCountry(assertValue = "include.text") {
+  verifyCurrentCountry(assertion = "include.text") {
     cy.get("td:nth-of-type(11)> span >p")
       .first()
-      .should(assertValue, currentCountry);
+      .should(assertion, currentCountry);
 
     return this;
   }
 
-  verifyPassportNumber(passportNumber, assertValue = "include.text") {
+  verifyPassportNumber(passportNumber, assertion = "include.text") {
     cy.get("tbody tr:nth-of-type(1) td:nth-of-type(10)").should(
-      assertValue,
+      assertion,
       passportNumber
     );
 

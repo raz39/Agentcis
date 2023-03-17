@@ -21,3 +21,4 @@ Cypress.Commands.add("verifyValidationErrors", (selectors) => {
     cy.get(selector).should("include.text", selectors[index]);
   });
 });
+import 'cypress-file-upload';
