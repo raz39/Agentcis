@@ -110,14 +110,6 @@ class Client {
     return this;
   }
 
-  dataValidation(selector, validation, formElement) {
-    cy.get(selector).each((selector, index) => {
-      cy.get(selector).should(validation, formElement[index]);
-    });
-
-    return this;
-  }
-
   clickOnActionButton() {
     cy.get("tr:first-child>td:last-child").click();
 
@@ -130,14 +122,14 @@ class Client {
     return this;
   }
 
-  verifyEmail(email,assertValue="include.text") {
-    cy.get(".ag-flex-column p").first().should(assertValue, email);
+  verifyEmail(email,assertion="include.text") {
+    cy.get(".ag-flex-column p").first().should(assertion, email);
 
     return this;
 }
 
-verifyName(name,assertValue="include.text") {
-  cy.get(".ag-flex-column a").first().should(assertValue,name);
+verifyName(name,assertion="include.text") {
+  cy.get(".ag-flex-column a").first().should(assertion,name);
 
   return this;
 }
