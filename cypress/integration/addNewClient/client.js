@@ -1,6 +1,6 @@
 /// <reference types="cypress" />
 import { faker } from "@faker-js/faker";
-import Client from "../../../client_PO/client";
+import Client from "../../support/POM/Client_PO";
 
 describe("Test for adding new client ", () => {
   const client = new Client();
@@ -14,84 +14,94 @@ describe("Test for adding new client ", () => {
     cy.preserveCookies();
   });
 
-  it("should verify validation error message while submitting without mandatory fields", () => {
-    const selector = [".js-input-error", ".js-input-error", ".js-input-error"];
-    const errorMessage = [
+  it("should validate empty field verification error", () => {
+    const emptyValidationError = [
       "The First Name field is required.",
       "The Last Name field is required.",
       "The Assignee field is required.",
     ];
 
-    client
-      .clickClient()
-      .wait(1000)
-      .clickAdd()
-      .wait(1000)
-      .clickSave("Save")
-      .dataVerify(selector, "include.text", errorMessage)
-      .clickCancel("Cancel");
+    client.clickOnClientMenu();
+
+    cy.wait(1000);
+
+    client.clickOnAddButton();
+
+    cy.wait(3000);
+
+    client.clickOnSaveButton();
+
+    cy.verifyValidationErrors(emptyValidationError);
+
+    client.clickOnCancelButton();
   });
 
   context("form fill for create new client dependent test", () => {
-    const firstname = faker.name.firstName();
-    const lastname = faker.name.lastName();
-    const email = faker.internet.email();
-
     beforeEach(() => {
-      client
-        .clickClient()
-        .wait(1000)
-        .clickAdd()
-        .wait(1000)
-        .typeFirstName("1", firstname)
-        .typeLastName("1", lastname)
-        .typeEmail("1", email);
-    });
+      const firstName = faker.name.firstName();
+      const lastName = faker.name.lastName();
+      const email = faker.internet.email();
+      const fullName = `${firstName} ${lastName}`;
 
-    it("should verify the functionality of cancel button", () => {
-      client.clickCancel("Cancel");
-    });
+      cy.wrap(email).as("email");
+      cy.wrap(fullName).as("fullName");
 
-    it("should add new client and verify added data is exist in list", () => {
-      client.clickSave("Save").wait(3000);
+      client.clickOnClientMenu();
 
-      cy.get(".ag-flex-column p").first().should("include.text", email);
-      cy.get(".ag-flex-column a")
-        .first()
-        .should("include.text", firstname + " " + lastname);
-    });
+      cy.wait(2000);
 
-    it("should add new client and verify edited data in list", () => {
-      const editfirstname = faker.name.firstName();
-      const editlastname = faker.name.lastName();
-      const editemail = faker.internet.email();
-      const mail = faker.internet.email();
+      client.clickOnAddButton();
 
-      client.typeEmail("1", mail).clickSave("Save").wait(3000);
-
-      cy.get(".ag-flex-column p").first().should("include.text", mail);
-      cy.get(".ag-flex-column a")
-        .first()
-        .should("include.text", firstname + " " + lastname);
-      cy.get("tr>td:nth-child(18)").first().click();
-      cy.get(
-        ".ag-menu__item [class='transparent-button width-100p']:nth-of-type(2)"
-      ).click();
+      cy.wait(2000);
 
       client
-        .wait(5000)
-        .typeeditFirstName("0", editfirstname)
-        .typeeditLastName("0", editlastname)
-        .typeMail("0", editemail);
+        .typeFirstName(firstName)
+        .typeLastName(lastName)
+        .typeEmail(email)
+        .selectAssignee()
+        .selectApplication();
+    });
+
+    it("should click on cancel button and verify added data inexistence in list", function () {
+      client
+        .clickOnCancelButton()
+        .verifyName(this.fullName, "not.have.text")
+        .verifyEmail(this.email, "not.have.text");
+    });
+
+    it("should add new client and verify added data existence in list", function () {
+      client.clickOnSaveButton();
+
+      cy.wait(5000);
+
+      client.verifyName(this.fullName).verifyEmail(this.email);
+    });
+
+    it("should add new client and verify edited data existence in list", function () {
+      const firstName = faker.name.firstName();
+      const lastName = faker.name.lastName();
+      const email = faker.internet.email();
+      const fullName = `${firstName} ${lastName}`;
+
+      client.clickOnSaveButton();
+
+      cy.wait(4000);
+
+      client
+        .verifyName(this.fullName)
+        .verifyEmail(this.email)
+        .clickOnActionButton()
+        .clickOnDropDownMenu("Edit");
+
+      cy.wait(3000);
+
+      client.editFirstName(firstName).editLastName(lastName).editEmail(email);
 
       cy.get(".submit-button-margin .blueButton").click();
 
-      client.wait(3000);
+      cy.wait(3000);
 
-      cy.get(".ag-flex-column p").first().should("include.text", editemail);
-      cy.get(".ag-flex-column a")
-        .first()
-        .should("include.text", editfirstname + " " + editlastname);
+      client.verifyName(fullName).verifyEmail(email);
     });
   });
 });
