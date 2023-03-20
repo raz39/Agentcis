@@ -11,10 +11,10 @@ describe("Test for adding new client ", () => {
     cy.wait(4000);
   });
 
-  beforeEach(function () {
-    cy.preserveCookies();
-  });
-  Cypress._.times(200, () => {
+  // beforeEach(function () {
+  //   cy.preserveCookies();
+  // });
+  //Cypress._.times(200, () => {
     it.only("should archieve the client", () => {
       client.clickOnClientMenu();
       cy.wait(4000)
@@ -27,12 +27,60 @@ describe("Test for adding new client ", () => {
       cy.get(".ag-flex-column a").first().click();                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
       cy.wait(3000);
       cy.get(".defaultNav.nav.nav-tabs > li:nth-of-type(2) > a").click();
-      cy.wait(3000);
-      cy.get("td a").click({ force: true });
+      cy.wait(6000);
+
+      cy.get("td:nth-of-type(4)")
+      //.eq(3)
+      .invoke("text")
+      .then((text) => {
+          if (text.trim() === "In Progress") {
+            cy.get("td a").click({ force: true });
       cy.get(".redButton.text-danger").click();
       cy.get(
         "div[name='discontinue_reason'] > div[role='combobox']"
       ).dblclick();
+          
+              
+
+          //     cy.get(".ag-menu__item.ag-scroll>a")
+          //         .last()
+          //         .click({ force: true })
+          //         .wait(2000);
+
+          //     documentType_PO
+          //         .verifyFirstStatusValue(INACTIVATE_STATUS_LABEL)
+          //         .clickOnThreeDotActionButton()
+          //         .verifyStatusOnThreeDotActionButton(
+          //             ACTIVATE_STATUS_LABEL
+          //         );
+          // } else {
+          //     documentType_PO
+          //         .verifyFirstStatusValue(INACTIVATE_STATUS_LABEL)
+          //         .clickOnThreeDotActionButton()
+          //         .verifyStatusOnThreeDotActionButton(
+          //             ACTIVATE_STATUS_LABEL
+          //         );
+
+          //     cy.get(".ag-menu__item.ag-scroll>a")
+          //         .last()
+          //         .click({ force: true })
+          //         .wait(2000);
+
+          //     documentType_PO
+          //         .verifyFirstStatusValue(ACTIVE_STATUS_LABEL)
+          //         .clickOnThreeDotActionButton()
+          //         .verifyStatusOnThreeDotActionButton("Deactivate");
+          }
+      
+
+
+
+
+      // cy.get("td a").click({ force: true });
+      // cy.get(".redButton.text-danger").click();
+      // cy.get(
+      //   "div[name='discontinue_reason'] > div[role='combobox']"
+      // ).dblclick();
       cy.get("ul[role='listbox'] li").then(($el) => {
         const random = Math.floor(Math.random() * $el.length);
         cy.wrap($el)
@@ -67,6 +115,7 @@ describe("Test for adding new client ", () => {
     });
   });
 
+
   Cypress._.times(200, () => {
     it("should archive the prospect", () => {
       cy.get("[href='#/contacts/prospects']").click();
@@ -74,13 +123,13 @@ describe("Test for adding new client ", () => {
       client.clickOnActionButton().clickOnDropDownMenu("Archive");
       cy.get(".accept").click();
 
-      // cy.get("[href='#/contacts/archived']").click();
-      // cy.wait(2000);
+      cy.get("[href='#/contacts/archived']").click();
+      cy.wait(2000);
 
-      // client.clickOnActionButton().clickOnDropDownMenu("Delete");
+      client.clickOnActionButton().clickOnDropDownMenu("Delete");
 
-      // cy.get(".accept").click();
-      // cy.reload();
+      cy.get(".accept").click();
+      cy.reload();
     });
   });
   Cypress._.times(200, () => {
