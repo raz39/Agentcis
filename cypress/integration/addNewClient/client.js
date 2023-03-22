@@ -41,8 +41,7 @@ describe("Test for adding new client ", () => {
       cy.wrap(email).as("email");
       cy.wrap(passportNumber).as("passportNumber");
 
-      cy.intercept(
-        "https://360degreetest.staging.agentcis.com/api/v2/custom-fields/client/filter").as("list");
+      cy.interception();
 
       client.clickOnClientMenu();
 
@@ -52,13 +51,9 @@ describe("Test for adding new client ", () => {
 
       cy.get(".inline-block").click();
 
-      cy.intercept("https://360degreetest.staging.agentcis.com/api/user").as("user");
-
-      cy.wait('@user');
-
       cy.get("#uploadProfileImage").attachFile("photo.jpg");
 
-      cy.wait(2000)
+      cy.wait(2000);
 
       cy.get("main#profileImageUpload-content .blueButton.button").click();
       cy.get("[class='text-center col-v-1'] .text-muted").click();
@@ -95,11 +90,6 @@ describe("Test for adding new client ", () => {
     it("should click on cancel button and verify data inexistence in list", function () {
       cy.get(".column >.button.defaultButton").click();
 
-      cy.intercept(
-        "https://360degreetest.staging.agentcis.com/api/v2/custom-fields/client/filter").as("list");
-
-      cy.wait("@list");
-
       client
         .verifyEmail(this.email, "not.have.text")
         .verifyCurrentCity(this.city, "not.have.text")
@@ -112,15 +102,10 @@ describe("Test for adding new client ", () => {
     });
 
     it("should add new client and verify added data existence in list", function () {
-      cy.intercept(
-        "https://360degreetest.staging.agentcis.com/api/v2/custom-fields/client/filter").as("list");
-
       cy.get(".submitButton").click({
         force: true,
       });
-
-      cy.wait("@list");
-
+      cy.wait(4000);
       client
         .verifyEmail(this.email)
         .verifyCurrentCity(this.city)

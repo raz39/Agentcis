@@ -1,3 +1,5 @@
+import 'cypress-file-upload';
+
 Cypress.Commands.add("login", () => {
   const email = Cypress.env("email");
   const password = Cypress.env("password");
@@ -21,4 +23,9 @@ Cypress.Commands.add("verifyValidationErrors", (selectors) => {
     cy.get(selector).should("include.text", selectors[index]);
   });
 });
-import 'cypress-file-upload';
+
+Cypress.Commands.add("interception", () => {
+cy.intercept(
+  "**/client/filter").as("list");
+});
+

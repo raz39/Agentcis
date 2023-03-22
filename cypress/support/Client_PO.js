@@ -224,7 +224,7 @@ class Client {
 
   selectFollowers() {
     cy.get("div[name='followers'] > div[role='combobox']").dblclick();
-    cy.get(".ag-select-element").then(($el) => {
+    cy.get("li strong").then(($el) => {
       const random = Math.floor(Math.random() * $el.length);
       cy.wrap($el)
         .eq(random)
@@ -234,7 +234,7 @@ class Client {
           cy.get("@followers").click({
             force: true,
           });
-          followers = name.trim().replace(/\((.*?)\)/g, "");
+          followers = name.trim().replace(/\((.*?)\)/g, "").trim();
         });
     });
 
