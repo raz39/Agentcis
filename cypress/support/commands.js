@@ -1,4 +1,4 @@
-import 'cypress-file-upload';
+import "cypress-file-upload";
 
 Cypress.Commands.add("login", () => {
   const email = Cypress.env("email");
@@ -25,7 +25,9 @@ Cypress.Commands.add("verifyValidationErrors", (selectors) => {
 });
 
 Cypress.Commands.add("interception", () => {
-cy.intercept(
-  "**/client/filter").as("list");
+  cy.intercept("**/client/filter").as("list");
 });
 
+Cypress.Commands.add("domain", () => {
+cy.get(".col-v-1 > span:nth-of-type(2)").should("have.text","Email: " + Cypress.env("email"));
+});
